@@ -4,12 +4,14 @@ function Span(trace, name, labels, parentSpan) {
 	this.name = name;
 	this.startTime = getTimestamp();
 	this.labels = labels || {};
-	this._spans = [];
+	this.parentSpanId = undefined;
 	if (parentSpan) {
 		parentSpan._spans.push(this);
 		this.parentSpanId = parentSpan.spanId;
 	}
 
+	this._parentSpan = parentSpan;
+	this._spans = [];
 	this._trace = trace;
 	trace.spans.push(this);
 }
@@ -39,6 +41,26 @@ Span.prototype.end = function end(labels, shallow) {
 			this.labels[k] = labels[k];
 		}
 	}
+};
+
+/**
+ * Removes a span from the trace. And child spans on this trace will be
+ * escalated so that their new parent is this span's parent.
+ */
+Span.prototype.cancel = function cancel() {
+	// Remove from trace.
+	var idx = this._trace.spans.indexOf(this);
+	if (idx !== -1) this._trace.spans.splice(idx, 1);
+	// Remove from parent span if present.
+	if (this._parentSpan) {
+		idx = this._parentSpan._spans.indexOf(this);
+		if (idx !== -1) this._parentSpan._spans.splice(idx, 1);
+	}
+	// Escalate child spans in the graph.
+	var thisParentSpanId = this.parentSpanId;
+	this._spans.forEach(function (span) {
+		if (span.parentSpanId) span.parentSpanId = thisParentSpanId;
+	});
 };
 
 Span.prototype.toObject = function toObject() {

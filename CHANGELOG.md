@@ -1,3 +1,8 @@
+1.2.0
+============
+### Features
+* Add `span.cancel` method.
+
 1.1.0
 ============
 ### Features

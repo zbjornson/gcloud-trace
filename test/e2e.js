@@ -3,7 +3,7 @@ var tracing = Tracing({projectId: process.env.GCLOUD_PROJECT});
 var assert = require('assert');
 
 // Keep node alive while the tests run.
-setTimeout(function () {}, tracing.writeInterval * 1000 * 3);
+setTimeout(function () {}, tracing.writeInterval * 1000 * 4);
 
 (function simple() {
 	var span0 = tracing.startRootSpan('root span');
@@ -85,7 +85,17 @@ setTimeout(function () {}, tracing.writeInterval * 1000 * 3);
 				trace.spans[0].name = 'patched existing span';
 				trace.end();
 			});
-		}, tracing.writeInterval * 1000 * 1.5);
+		}, tracing.writeInterval * 1000 * 2.2);
 
+	}, 50);
+})();
+
+
+(function cancelSpan() {
+	var span0 = tracing.startRootSpan('root span with cancelled span');
+	var span1 = span0.startSpan('cancelled span');
+	setTimeout(function () {
+		span1.cancel();
+		span0.end();
 	}, 50);
 })();
