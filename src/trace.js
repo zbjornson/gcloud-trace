@@ -39,6 +39,13 @@ Trace.prototype.end = function end() {
 };
 
 /**
+ * Cancels a trace so it will not be send to the server.
+ */
+Trace.prototype.cancel = function cancel() {
+	this.end = noop;
+};
+
+/**
  * Formats this Trace for writing (i.e. removes private members).
  */
 Trace.prototype.toObject = function toObject() {
@@ -55,5 +62,7 @@ Trace.prototype.toObject = function toObject() {
 function hex(n) {
 	return crypto.randomBytes(Math.ceil(n / 2)).toString('hex').slice(0, n);
 }
+
+function noop() {}
 
 module.exports = Trace;

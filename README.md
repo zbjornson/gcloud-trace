@@ -44,8 +44,8 @@ function myfn(req, res, next) {
 	var span2 = span1.startSpan('child span 1-1');
 	// Do some other work
 
-	span2.end(); // optional; if omitted will end when trace/span0 ends
-	span1.end(); // ditto
+	span2.end(); // optional; if omitted will end when span1 or trace/span0 ends
+	span1.end(); // optional; if omitted will end when trace/span0 ends
 	span0.end(); // required
 }
 ```
@@ -67,9 +67,10 @@ function myfn(req, res, next) {
 This is what you will typically use to create traces.
 
 Creates a trace with a root span with the provided name and optional labels.
-The `end` method on the returned span is augmented to end the trace
-automatically. (Calling `end` on a span created with `trace.startSpan()` does
-not end the trace.)
+The `end` method on the returned span is augmented to also end the trace.
+(Calling `end` on a span created with `trace.startSpan()` does not end the
+trace.) The returned span also has a `cancel` method (see
+[`Trace.cancel`](#tracecancel)).
 
 Note that this root-level span's name is used as the URI in the Stackdriver
 Trace web interface trace list.
@@ -103,6 +104,12 @@ Starts a new root-level span on this trace.
 
 Ends all of the trace's spans and queues it for writing.
 
+#### trace.cancel()
+*Added in 1.1.0*
+
+Cancels the trace. All methods remain intact on the trace and its spans, but
+calling `end` will not send the trace to the server.
+
 ### Class: `Span`
 
 #### span.end([labels])
@@ -125,6 +132,46 @@ Starts a new child span on this span.
 These don't seem to have an effect on display in the GCP console, but you can
 set the span kind to these values if you wish:
 `span.kind = Span.SPAN_KIND.RPC_SERVER`. See [docs](https://cloud.google.com/trace/api/reference/rest/v1/projects.traces#SpanKind).
+
+## Hooks
+
+### Express
+*Added in 1.1.0*
+
+```js
+var tracing = require('gcloud-trace')({projectId: 'my-project'});
+var app = express();
+app.use(tracing.Express());
+app.use('/path', function (req, res) {
+  // Use req.trace.startSpan to trace operations within a request:
+  var span = req.trace.startSpan('doing work');
+  // do work...
+  span.end(); // optional; will get closed when the request ends.
+});
+```
+
+The `tracing.Express` middleware traces requests end-to-end with a root span,
+which is automatically labeled with the method, URL, status code and response
+size. That span is exposed as `req.trace` if you want to add child spans in
+your request handlers or other middleware.
+
+Use the `config` to set rate limiting on tracing (default is unlimited):
+
+```js
+app.use(tracing.Express({
+  maxRPS: 100 // trace up to 100 requests per second
+}));
+```
+
+If you want to skip tracing for a particular route or under particular cases,
+call `req.trace.cancel()`.
+
+The `o=TRACE_TRUE` suffix of the `X-Cloud-Trace-Context` header can be used to
+force a request to be traced or not traced (see [docs](https://cloud.google.com/trace/docs/faq#how_do_i_force_a_request_to_be_traced)).
+The `TRACE_ID` and `SPAN_ID` fields are ignored; you can use any value (or no
+value) for those; e.g. `X-Cloud-Trace-Context: o=1` would work. (Author's note:
+I'm not sure what the use case is for those aside from later looking up that
+specific request's trace; they seem like a hassle otherwise.)
 
 ## Tips
 

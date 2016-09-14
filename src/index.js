@@ -3,6 +3,7 @@ var util = require('util');
 var extend = require('extend');
 var Trace = require('./trace');
 var Span = require('./span');
+var createExpressTracer = require('./hooks/express');
 
 var defaultConfig = {
 	writeInterval: 5,
@@ -82,12 +83,13 @@ Tracing.prototype.getTrace = function get(traceId, callback) {
 
 /**
  * Starts a trace and a root span. Calling 'end' on the returned root span will
- * also end the trace.
+ * also end the trace. Calling 'cancel' will cancel the trace.
  */
 Tracing.prototype.startRootSpan = function startRootSpan(name, labels) {
 	var trace = this.startTrace();
 	var rootSpan = trace.startSpan(name, labels);
 	rootSpan.end = trace.end.bind(trace);
+	rootSpan.cancel = trace.cancel.bind(trace);
 	return rootSpan;
 };
 
@@ -129,6 +131,10 @@ Tracing.prototype._write = function _write() {
 	}, function (err) {
 		if (err) console.log(err);
 	});
+};
+
+Tracing.prototype.Express = function (config) {
+	return createExpressTracer(this, config);
 };
 
 Tracing.Trace = Trace;
