@@ -1,0 +1,30 @@
+{
+  "name": "gcloud-trace",
+  "version": "1.0.0",
+  "description": "simple Stackdriver Trace SDK",
+  "main": "src/index.js",
+  "dependencies": {
+    "@google-cloud/common": "^0.5.0",
+    "extend": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node test/e2e.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zbjornson/gcloud-trace.git"
+  },
+  "keywords": [
+    "stackdriver",
+    "google cloud",
+    "trace",
+    "tracing"
+  ],
+  "author": "@zbjornson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zbjornson/gcloud-trace/issues"
+  },
+  "homepage": "https://github.com/zbjornson/gcloud-trace#readme"
+}
