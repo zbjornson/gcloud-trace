@@ -1,6 +1,6 @@
 {
   "name": "gcloud-trace",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "simple Stackdriver Trace SDK",
   "main": "src/index.js",
   "dependencies": {

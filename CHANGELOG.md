@@ -1,3 +1,9 @@
+1.2.1
+============
+### Bug fixes
+* Ignore `X-Cloud-Trace-Context` header if it lacks the `o=\d` suffix. (GCP
+load balancers can add this header without the suffix.)
+
 1.2.0
 ============
 ### Features

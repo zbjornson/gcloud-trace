@@ -1,4 +1,5 @@
-var O1_SUFFIX_REGEX = /o=1$/;
+var O_SUFFIX_REGEX = /;o=\d$/;
+var O1_SUFFIX_REGEX = /;o=1$/;
 var XCTC_HEADER = 'x-cloud-trace-context';
 
 module.exports = function createExpressTracer(tracing, config) {
@@ -11,7 +12,9 @@ module.exports = function createExpressTracer(tracing, config) {
 			}, 1000).unref();
 			return function shouldTrace(req) {
 				var xctc = req.get(XCTC_HEADER);
-				if (xctc) return O1_SUFFIX_REGEX.test(xctc);
+				if (xctc && O_SUFFIX_REGEX.test(xctc)) {
+					return O1_SUFFIX_REGEX.test(xctc);
+				}
 				return requests++ < maxRPS;
 			};
 		} else {
