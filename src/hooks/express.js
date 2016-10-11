@@ -28,6 +28,8 @@ module.exports = function createExpressTracer(tracing, config) {
 		}
 	})();
 
+	var hostname = require("os").hostname();
+
 	/**
 	 * Express middleware. Adds a root span to the request, labeled with basic
 	 * information about the request. Trace subspans using:
@@ -43,7 +45,8 @@ module.exports = function createExpressTracer(tracing, config) {
 		var url = (req.baseUrl || '') + (req.url || '-');
 		var labels = {
 			'trace.cloud.google.com/http/method': method,
-			'trace.cloud.google.com/http/url': url
+			'trace.cloud.google.com/http/url': url,
+			'trace.cloud.google.com/http/host': hostname
 		};
 
 		var trace = tracing.startTrace();

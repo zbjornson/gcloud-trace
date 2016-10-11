@@ -1,3 +1,8 @@
+1.3.2
+============
+### Feature
+* Include hostname in Express hook.
+
 1.3.1
 ============
 ### Bugfix

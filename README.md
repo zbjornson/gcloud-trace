@@ -151,9 +151,9 @@ app.use('/path', function (req, res) {
 ```
 
 The `tracing.Express` middleware traces requests end-to-end with a root span,
-which is automatically labeled with the method, URL, status code and response
-size. That span is exposed as `req.trace` if you want to add child spans in
-your request handlers or other middleware.
+which is automatically labeled with the method, URL, hostname, status code and
+response size. That span is exposed as `req.trace` if you want to add child
+spans in your request handlers or other middleware.
 
 Use the `config` to set rate limiting on tracing (default is unlimited):
 
