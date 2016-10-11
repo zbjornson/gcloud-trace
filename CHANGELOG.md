@@ -1,3 +1,8 @@
+1.3.0
+============
+### Feature
+* Use TRACE\_ID and SPAN\_ID in Express hook if provided in request header.
+
 1.2.1
 ============
 ### Bug fixes

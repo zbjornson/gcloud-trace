@@ -168,10 +168,20 @@ call `req.trace.cancel()`.
 
 The `o=TRACE_TRUE` suffix of the `X-Cloud-Trace-Context` header can be used to
 force a request to be traced or not traced (see [docs](https://cloud.google.com/trace/docs/faq#how_do_i_force_a_request_to_be_traced)).
-The `TRACE_ID` and `SPAN_ID` fields are ignored; you can use any value (or no
-value) for those; e.g. `X-Cloud-Trace-Context: o=1` would work. (Author's note:
-I'm not sure what the use case is for those aside from later looking up that
-specific request's trace; they seem like a hassle otherwise.)
+If provided, the `TRACE_ID` and `SPAN_ID` fields are used as well. Valid headers
+patterns include:
+
+* `X-Cloud-Trace-Context: o=1` trace and use auto-generated IDs
+* `X-Cloud-Trace-Context: b75dc0042a82efcb6b0a194911272926` use specified
+  traceId and auto-generated spanId. Use default tracing decision (e.g. `maxRPS`
+  setting).
+* `X-Cloud-Trace-Context: b75dc0042a82efcb6b0a194911272926/1258215` use
+  specified traceId, and start counting from specified spanId. Use default
+  tracing decision.
+* `X-Cloud-Trace-Context: b75dc0042a82efcb6b0a194911272926/1258215;o=1` use
+  specified traceId and spanId, and force tracing.
+
+This is useful for continuing traces across servers/services.
 
 ## Tips
 

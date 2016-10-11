@@ -1,10 +1,12 @@
-var O_SUFFIX_REGEX = /;o=\d$/;
-var O1_SUFFIX_REGEX = /;o=1$/;
 var XCTC_HEADER = 'x-cloud-trace-context';
+var TRACE_ID_REGEX = /^([0-9a-f]{32})/;
+var SPAN_ID_REGEX = /\/(\d+)/;
+var O_SUFFIX_REGEX = /o=\d$/;
+var O1_SUFFIX_REGEX = /o=1$/;
 
 module.exports = function createExpressTracer(tracing, config) {
 	var shouldTrace = (function () {
-		if (typeof config.maxRPS === 'number') {
+		if (config && typeof config.maxRPS === 'number') {
 			var maxRPS = config.maxRPS;
 			var requests = 0;
 			setInterval(function () {
@@ -45,6 +47,14 @@ module.exports = function createExpressTracer(tracing, config) {
 		};
 
 		var trace = tracing.startTrace();
+		var xctc = req.get(XCTC_HEADER);
+		if (xctc) {
+			var match;
+			match = xctc.match(TRACE_ID_REGEX);
+			if (match && match.length === 2) trace.traceId = match[1];
+			match = xctc.match(SPAN_ID_REGEX);
+			if (match && match.length === 2) trace._spanIdInc = parseInt(match[1], 10);
+		}
 		req.trace = trace.startSpan(url, labels);
 
 		function endTrace() {
