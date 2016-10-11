@@ -183,6 +183,11 @@ patterns include:
 
 This is useful for continuing traces across servers/services.
 
+Note that Google specifies `SPAN_ID` as a 64-bit integer, which is not
+necessarily safe in JavaScript. gcloud-trace will only use the provided
+`SPAN_ID` if it is a safe JavaScript integer; otherwise it will default to 1.
+(GCP load balancers frequently generate unsafe JavaScript integers.)
+
 ## Tips
 
 ### Labels

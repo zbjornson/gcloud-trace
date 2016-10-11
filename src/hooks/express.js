@@ -53,7 +53,10 @@ module.exports = function createExpressTracer(tracing, config) {
 			match = xctc.match(TRACE_ID_REGEX);
 			if (match && match.length === 2) trace.traceId = match[1];
 			match = xctc.match(SPAN_ID_REGEX);
-			if (match && match.length === 2) trace._spanIdInc = parseInt(match[1], 10);
+			if (match && match.length === 2) {
+				var spanId = parseInt(match[1], 10);
+				if (Number.isSafeInteger(spanId)) trace._spanIdInc = spanId;
+			}
 		}
 		req.trace = trace.startSpan(url, labels);
 

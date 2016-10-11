@@ -1,3 +1,8 @@
+1.3.1
+============
+### Bugfix
+* Only use SPAN\_ID if it is a safe JS integer.
+
 1.3.0
 ============
 ### Feature
