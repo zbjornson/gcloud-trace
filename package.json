@@ -4,7 +4,7 @@
   "description": "simple Stackdriver Trace SDK",
   "main": "src/index.js",
   "dependencies": {
-    "@google-cloud/common": "^0.8.0",
+    "@google-cloud/common": "^0.13.4",
     "extend": "^3.0.0"
   },
   "devDependencies": {},
