@@ -45,8 +45,9 @@ Span.prototype.end = function end(labels, shallow) {
 	for (var l in this.labels) {
 		// API limits to 16384 chars. Note that this could also bump up against
 		// the total API request size limit.
-		if (this.labels[l].length > 16384) {
-			this.labels[l] = this.labels[l].substring(0, 16384);
+		var label = this.labels[l];
+		if (typeof label === 'string' && label.length > 16384) {
+			this.labels[l] = label.substring(0, 16384);
 		}
 	}
 };
