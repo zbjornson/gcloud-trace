@@ -1,7 +1,8 @@
 function Span(trace, name, labels, parentSpan) {
 	this.spanId = trace.getNextSpanId();
 	this.kind = Span.SPAN_KIND.UNSPECIFIED;
-	this.name = name;
+	// API limits to 2048 chars
+	this.name = name.length > 2048 ? name.substring(0, 2048) : name;
 	this.startTime = getTimestamp();
 	this.labels = labels || {};
 	this.parentSpanId = undefined;
@@ -39,6 +40,13 @@ Span.prototype.end = function end(labels, shallow) {
 	if (labels) {
 		for (var k in labels) {
 			this.labels[k] = labels[k];
+		}
+	}
+	for (var l in this.labels) {
+		// API limits to 16384 chars. Note that this could also bump up against
+		// the total API request size limit.
+		if (this.labels[l].length > 16384) {
+			this.labels[l] = this.labels[l].substring(0, 16384);
 		}
 	}
 };
