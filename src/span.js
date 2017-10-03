@@ -1,8 +1,10 @@
 function Span(trace, name, labels, parentSpan) {
 	this.spanId = trace.getNextSpanId();
 	this.kind = Span.SPAN_KIND.UNSPECIFIED;
-	// API limits to 2048 chars
-	this.name = name.length > 2048 ? name.substring(0, 2048) : name;
+	if (name) {
+		// API limits to 2048 chars
+		this.name = name.length > 2048 ? name.substring(0, 2048) : name;
+	}
 	this.startTime = getTimestamp();
 	this.labels = labels || {};
 	this.parentSpanId = undefined;
