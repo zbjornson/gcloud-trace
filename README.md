@@ -1,3 +1,11 @@
+## *This Library is Deprecated*
+
+This library uses old GCP metadata endpoints that will cease to work on April 30th, 2020. Rather than update this library, [OpenTelemetry appears to be a good replacement and is recommended by Google](https://cloud.google.com/trace/docs/setup/nodejs-ot).
+
+(Caveat: I haven't verified that OpenTelemetry tracing provides 100% of the capabilities that StackDriver Trace provides, especially child spans.)
+
+---
+
 #### Preface
 
 This is a simple, unofficial library for creating Stackdriver traces. Google
